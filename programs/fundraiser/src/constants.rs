@@ -8,3 +8,5 @@ pub const PERCENTAGE_SCALER: u64 = 100;
 
 #[constant]
 pub const FUNDRAISER_SEED: &[u8] = b"fundraiser_seed";
+#[constant]
+pub const CONTRIBUTER_SEED: &[u8] = b"contributer_seed";

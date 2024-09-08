@@ -4,7 +4,7 @@ use anchor_spl::{
     token::{Mint, Token, TokenAccount},
 };
 
-use crate::{state::Fundraiser, FUNDRAISER_SEED};
+use crate::{state::Fundraiser, FundraiserError, FUNDRAISER_SEED, MIN_AMOUNT_TO_RAISE};
 
 #[derive(Accounts)]
 pub struct Initialize<'info> {
@@ -35,6 +35,21 @@ pub struct Initialize<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub fn handler_initialize(ctx: Context<Initialize>) -> Result<()> {
+pub fn handler_initialize(ctx: Context<Initialize>, amount: u64, duration: u16) -> Result<()> {
+    require!(
+        amount >= MIN_AMOUNT_TO_RAISE.pow(ctx.accounts.mint_to_raise.decimals as u32),
+        FundraiserError::InvalidAmount
+    );
+
+    ctx.accounts.fundraiser.set_inner(Fundraiser {
+        bump: ctx.bumps.fundraiser,
+        maker: ctx.accounts.maker.key(),
+        mint_to_raise: ctx.accounts.mint_to_raise.key(),
+        amount_to_raise: amount,
+        current_amount: 0,
+        time_started: Clock::get()?.unix_timestamp,
+        duration: duration,
+    });
+
     Ok(())
 }

@@ -8,6 +8,6 @@ pub struct Fundraiser {
     pub mint_to_raise: Pubkey,
     pub amount_to_raise: u64,
     pub current_amount: u64,
-    pub time_started: u16,
+    pub time_started: i64,
     pub duration: u16,
 }
